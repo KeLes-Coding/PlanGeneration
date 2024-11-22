@@ -4,17 +4,17 @@ PROGRAM_PATH = "src\query_receive.py"
 QUERY_RECEIVE = "src\query_receive.py"
 
 # deepseek
-API_KEY = ""
+API_KEY = "sk-7643fe706a314c62b87a8b93d946b3fa"
 BASE_URL = "https://api.deepseek.com"
 GLOBAL_MODEL = "deepseek-chat"
 
 # qwen
-# API_KEY="",
+# API_KEY="sk-cd4c82aa176c471d8307c4128b7aa134",
 # BASE_URL="https://dashscope.aliyuncs.com/compatible-mode/v1",
 # GLOBAL_MODEL = "qwen-plus"
 
 # gpt-4o
-# API_KEY="",
+# API_KEY="sk-9HVuutnTyoZM3YRpooHuW3JFkDsF68n2rci38aLLzU9GcdKO",
 # BASE_URL="https://api.chatanywhere.tech",
 # GLOBAL_MODEL = "gpt-4o"
 
