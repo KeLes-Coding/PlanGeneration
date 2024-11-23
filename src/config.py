@@ -1,8 +1,11 @@
+# message.txt 文件存放地址
 MESSAGE_PATH = "message.txt"
-PROGRAM_PATH = "src\query_receive.py"
-
+# 程序调用入口：
 QUERY_RECEIVE = "src\query_receive.py"
 
+"""
+    模型选择模块
+"""
 # deepseek
 API_KEY = ""
 BASE_URL = "https://api.deepseek.com"
@@ -18,6 +21,13 @@ GLOBAL_MODEL = "deepseek-chat"
 # BASE_URL="https://api.chatanywhere.tech",
 # GLOBAL_MODEL = "gpt-4o"
 
+# JSON 文件保存地址
+JSON_DATA = "JSON_data"
+
+"""
+    Agent 初始化模块
+"""
+# Planner 初始化模版
 MESSAGE_PLANNER = [
     """Your tools are as follows:
 RealTimeAmazonData	"{
@@ -184,6 +194,7 @@ ShopeeEcommerceData	"{
 The task is:
 """
 ]
+# Result 初始化模版
 MESSAGE_RESULT = [
     """
 Your tools are as follows:

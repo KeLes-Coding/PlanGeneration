@@ -2,19 +2,33 @@
 PLAN 生成器
 """
 
+import copy
 import json
+import os
 from Agent.agents import Agent_Planner, Agent_Result
 import config
 
 
 class plan_generater:
-    def __init__(self, query):
+    def __init__(self, message_number, query, query_message):
+        # 接收 query 编号
+        self.message_number = message_number
+        # query
         self.query = query
+        self.query_message = query_message
+
+        self.message_planner = []
+        self.message_results = []
+        self.message_total = []
 
     # Agent 初始化
     def AgentInit(self):
         agents = [Agent_Planner("Planner"), Agent_Result("Result")]
         return agents
+
+    """
+        信息处理模块
+    """
 
     # Planner 打印器
     def PlannerJsonPrinter(self, json_data):
@@ -29,6 +43,7 @@ class plan_generater:
                 },
             },
         }
+        self.message_planner.append(formatted_json)
         return formatted_json
 
     # Result 打印器
@@ -44,7 +59,90 @@ class plan_generater:
                 },
             },
         }
+        self.message_results.append(formatted_json)
+
+        # 将 "Results" 拼接到相同 StepNumber 的 "OrderSteps" 中形成该 StepNumber 的 message_total
+        messages_total = copy.deepcopy(self.message_planner[-1])
+        messages_total["OrderSteps"]["StepDetail"]["Results"] = json_data["OrderSteps"][
+            "StepDetail"
+        ]["Results"]
+        self.message_total.append(messages_total)
         return formatted_json
+
+    """
+        文件保存模块
+    """
+
+    # 文件保存函数
+    def message_save(self):
+        self.message_planner_save()
+        self.message_results_save()
+        self.message_total_save()
+        print("文件保存成功！")
+
+    # message_planner 保存到文件
+    def message_planner_save(self):
+        # 确保目录存在，如果不存在则创建
+        json_data = config.JSON_DATA
+        directory = f"{json_data}/{self.message_number}"
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        file_name = self.message_number + "-message_planner.json"
+        file_path = os.path.join(directory, file_name)
+
+        data = {"MessageNumber": self.message_number, "Query": self.query_message}
+
+        formatted_planner = []
+        formatted_planner.append(data)
+        for json_str in self.message_planner:
+            formatted_planner.append(json_str)
+        with open(file_path, "w") as json_file:
+            json.dump(formatted_planner, json_file, indent=4)
+
+    # message_results 保存到文件
+    def message_results_save(self):
+        # 确保目录存在，如果不存在则创建
+        json_data = config.JSON_DATA
+        directory = f"{json_data}/{self.message_number}"
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        file_name = self.message_number + "-message_results.json"
+        file_path = os.path.join(directory, file_name)
+
+        data = {"MessageNumber": self.message_number, "Query": self.query_message}
+
+        formatted_results = []
+        formatted_results.append(data)
+        for json_str in self.message_results:
+            formatted_results.append(json_str)
+        with open(file_path, "w") as json_file:
+            json.dump(formatted_results, json_file, indent=4)
+
+    # message_total 保存到文件
+    def message_total_save(self):
+        # 确保目录存在，如果不存在则创建
+        json_data = config.JSON_DATA
+        directory = f"{json_data}/{self.message_number}"
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        file_name = self.message_number + "-message_total.json"
+        file_path = os.path.join(directory, file_name)
+
+        data = {"MessageNumber": self.message_number, "Query": self.query_message}
+
+        formatted_total = []
+        formatted_total.append(data)
+        for json_str in self.message_total:
+            formatted_total.append(json_str)
+        with open(file_path, "w") as json_file:
+            json.dump(formatted_total, json_file, indent=4)
+
+    """
+        对话生成模块
+    """
 
     # 对话生成器
     def PlanGenerater(self):
@@ -115,6 +213,7 @@ class plan_generater:
                 ]
                 if step_number == TotalSteps:
                     print("生成结束！")
+                    self.message_save()
                     break
 
             # 切换agent
