@@ -125,11 +125,15 @@ class plan_generater:
         # 确保目录存在，如果不存在则创建
         json_data = config.JSON_DATA
         directory = f"{json_data}/{self.message_number}"
+        directory_2 = f"{json_data}/message_total"
         if not os.path.exists(directory):
             os.makedirs(directory)
+        if not os.path.exists(directory_2):
+            os.makedirs(directory_2)
 
         file_name = self.message_number + "-message_total.json"
         file_path = os.path.join(directory, file_name)
+        file_path_2 = os.path.join(directory_2, file_name)
 
         data = {"MessageNumber": self.message_number, "Query": self.query_message}
 
@@ -138,6 +142,8 @@ class plan_generater:
         for json_str in self.message_total:
             formatted_total.append(json_str)
         with open(file_path, "w") as json_file:
+            json.dump(formatted_total, json_file, indent=4)
+        with open(file_path_2, "w") as json_file:
             json.dump(formatted_total, json_file, indent=4)
 
     """
